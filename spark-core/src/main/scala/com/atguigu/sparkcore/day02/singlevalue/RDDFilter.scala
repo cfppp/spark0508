@@ -1,4 +1,4 @@
-package com.atguigu.sparkcore.day02
+package com.atguigu.sparkcore.day02.singlevalue
 
 import org.apache.spark.{SparkConf, SparkContext}
 
