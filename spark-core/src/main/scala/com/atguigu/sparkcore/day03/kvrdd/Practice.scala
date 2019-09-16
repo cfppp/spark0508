@@ -48,9 +48,9 @@ object Practice {
 
 倒推法:
 => ...
-=> RDD[(province,ads), 1))]
+=> RDD[(province,ads), 1))]    reduceByKey
 => RDD[(province,ads), count))]   map
 => RDD[(province, (ads, count))]        groupByKey
 => RDD[(province, List[(ads, count)])]
 
- */
+ */;
