@@ -28,6 +28,8 @@ object JDBCWrite {
             val ps: PreparedStatement = conn.prepareStatement(sql)
             ps.setInt(1, x)
             ps.execute()
+            ps.close()
+            conn.close()
             // 写
         })*/
         /*rdd2.foreachPartition(it => {
@@ -50,9 +52,9 @@ object JDBCWrite {
                 ps.addBatch()
             })
             ps.executeBatch()
+            ps.close()
             conn.close()
         })
         sc.stop()
-        
     }
 }
