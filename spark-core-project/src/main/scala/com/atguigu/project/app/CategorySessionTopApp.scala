@@ -1,8 +1,11 @@
 package com.atguigu.project.app
 
 import com.atguigu.project.bean.{CategoryCountInfo, CategorySession, UserVisitAction}
-import org.apache.spark.SparkContext
+import org.apache.spark.{Partitioner, SparkContext}
 import org.apache.spark.rdd.RDD
+import java.util
+
+import scala.collection.mutable
 
 /**
   * Author lzc
@@ -69,6 +72,48 @@ object CategorySessionTopApp {
         })
         
     }
+    
+    def statCategoryTop10Session_2(sc: SparkContext, userVisitActionRDD: RDD[UserVisitAction], top10CategoryCountInfo: List[CategoryCountInfo]) = {
+        // 1. 包含top10cid的那些用户点击记录过滤出来
+        val filteredUserVisitActionRDD: RDD[UserVisitAction] = userVisitActionRDD.filter(action => {
+            top10CategoryCountInfo.map(_.categoryId).contains(action.click_category_id.toString)
+        })
+        //RDD[(cid, sid), 1]
+        val cidSidOneRDD: RDD[((Long, String), Int)] = filteredUserVisitActionRDD.map(action => ((action.click_category_id, action.session_id), 1))
+        
+        // RDD[(cid, sid), count]    RDD[(cid, (sid, count)]  RDD[(cid, Iteraot[(sid, count)])]
+        val cidSidCountItRDD: RDD[CategorySession] = cidSidOneRDD
+            .reduceByKey(new MyPartitioner(top10CategoryCountInfo.map(_.categoryId)), _ + _)  // 重新分区
+            .map {
+                case ((cid, sid), count) => CategorySession(cid.toString,sid, count)
+            }
+        
+        val resultRdd = cidSidCountItRDD.mapPartitions(it => {
+            var treeSet: mutable.TreeSet[CategorySession] = new mutable.TreeSet[CategorySession]()
+            it.foreach(cs => {
+                treeSet += cs
+                if(treeSet.size > 10){
+                    treeSet = treeSet.take(10)
+                }
+            })
+            treeSet.toIterator
+        })
+        
+        resultRdd.collect.foreach(println)
+    }
+}
+
+// 根据cid的个数进行分区
+class MyPartitioner(categoryIdTop10: List[String])extends Partitioner{
+    private val cidIndexList: Map[String, Int] = categoryIdTop10.zipWithIndex.toMap
+    
+    override def numPartitions: Int = categoryIdTop10.size
+    
+    override def getPartition(key: Any): Int = {
+        key match {
+            case (cid: Long , _) => cidIndexList(cid.toString)
+        }
+    }
 }
 
 /*
@@ -78,7 +123,7 @@ object CategorySessionTopApp {
        优点: 不会内存溢出
        缺点: 启动比较多的job
        
-2. ...
+2.
 
 
 

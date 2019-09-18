@@ -37,7 +37,9 @@ object ProjectApp {
         // 需求1: top10的热门品类
         val top10CategoryCountInfo: List[CategoryCountInfo] = CategoryTop10App.statCategoryTop10(sc, userVisitActionRDD)
         // 需求2:
-        CategorySessionTopApp.statCategoryTop10Session_1(sc, userVisitActionRDD, top10CategoryCountInfo)
+        CategorySessionTopApp.statCategoryTop10Session(sc, userVisitActionRDD, top10CategoryCountInfo)
+        println("--------")
+        CategorySessionTopApp.statCategoryTop10Session_2(sc, userVisitActionRDD, top10CategoryCountInfo)
         
         sc.stop()
     }
