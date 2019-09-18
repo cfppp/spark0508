@@ -37,7 +37,7 @@ object CategoryTop10App {
         val top10 = categoryCountInfoList
             .sortBy(info => (info.clickCount, info.orderCount, info.payCount))(Ordering.Tuple3(Ordering.Long.reverse, Ordering.Long.reverse, Ordering.Long.reverse))
             .take(10)
-        println(top10)
+        top10
     }
 }
 
