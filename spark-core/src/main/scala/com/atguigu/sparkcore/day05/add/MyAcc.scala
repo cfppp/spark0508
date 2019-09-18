@@ -21,7 +21,6 @@ class MyAcc extends AccumulatorV2[Long, Long] {
     // 核心功能: 累加
     override def add(v: Long): Unit = sum += v
     
-    
     // 合并: 合并累加器
     override def merge(other: AccumulatorV2[Long, Long]): Unit = {
         /*val o: MyAcc = other.asInstanceOf[MyAcc]
