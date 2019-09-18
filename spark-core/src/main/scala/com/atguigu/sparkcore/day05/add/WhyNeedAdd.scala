@@ -20,7 +20,8 @@ object WhyNeedAdd {
             (x, 1)
         })
         rdd3.collect
-        println(a)
+        println("------")
+        println(a)  // 1
         sc.stop()
     }
 }
