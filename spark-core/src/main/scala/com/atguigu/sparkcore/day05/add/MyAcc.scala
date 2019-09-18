@@ -23,6 +23,7 @@ class MyAcc extends AccumulatorV2[Long, Long] {
     
     // 合并: 合并累加器
     override def merge(other: AccumulatorV2[Long, Long]): Unit = {
+        println("aaaa")
         /*val o: MyAcc = other.asInstanceOf[MyAcc]
         this.sum += o.sum*/
         

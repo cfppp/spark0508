@@ -25,7 +25,6 @@ object Add1 {
         
         
         rdd3.collect
-        rdd3.collect
         println("------")
         println(acc.value)  //
         sc.stop()
